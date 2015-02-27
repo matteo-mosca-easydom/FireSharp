@@ -83,6 +83,7 @@
     <Compile Include="Config\FirebaseConfig.cs" />
     <Compile Include="Config\IFirebaseConfig.cs" />
     <Compile Include="EventStreaming\Delegates.cs" />
+    <Compile Include="EventStreaming\KeepAliveEventArgs.cs" />
     <Compile Include="EventStreaming\SimpleCacheItem.cs" />
     <Compile Include="EventStreaming\TemporaryCache.cs" />
     <Compile Include="EventStreaming\ValueAddedEventArgs.cs" />

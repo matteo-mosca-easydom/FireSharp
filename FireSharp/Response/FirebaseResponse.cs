@@ -26,7 +26,8 @@ namespace FireSharp.Response
         internal FirebaseResponse(HttpResponseMessage httpResponse,
             ValueAddedEventHandler added = null,
             ValueChangedEventHandler changed = null,
-            ValueRemovedEventHandler removed = null)
+            ValueRemovedEventHandler removed = null,
+            KeepAliveEventHandler keepAlive = null)
         {
             _cancel = new CancellationTokenSource();
 
@@ -43,6 +44,11 @@ namespace FireSharp.Response
             if (removed != null)
             {
                 _cache.Removed += removed;
+            }
+
+            if (keepAlive != null)
+            {
+                _cache.KeepAlive += keepAlive;
             }
 
             _pollingTask = ReadLoop(httpResponse, _cancel.Token);
@@ -73,7 +79,12 @@ namespace FireSharp.Response
 
                 while (true)
                 {
-                    cancellationToken.ThrowIfCancellationRequested();
+                    ////cancellationToken.ThrowIfCancellationRequested();
+                    if (cancellationToken.IsCancellationRequested)
+                    {
+                        _cache.NotifyKeepAlive(false);
+                        throw new System.OperationCanceledException();
+                    }
 
                     // TODO: it really sucks that this does not take a cancellation token
                     var read = await sr.ReadLineAsync();
@@ -83,6 +94,7 @@ namespace FireSharp.Response
                     if (read.StartsWith("event: "))
                     {
                         eventName = read.Substring(7);
+                        _cache.NotifyKeepAlive(true);
                         continue;
                     }
 
@@ -90,6 +102,7 @@ namespace FireSharp.Response
                     {
                         if (string.IsNullOrEmpty(eventName))
                         {
+                            _cache.NotifyKeepAlive(false);
                             throw new InvalidOperationException(
                                 "Payload data was received but an event did not preceed it.");
                         }

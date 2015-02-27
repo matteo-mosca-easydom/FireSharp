@@ -44,6 +44,11 @@ namespace FireSharp.EventStreaming
             }
         }
 
+        public void NotifyKeepAlive(bool isAlive)
+        {
+            this.OnKeepAlive(new KeepAliveEventArgs(isAlive));
+        }
+
         private SimpleCacheItem FindRoot(string path)
         {
             var segments = path.Split(_seperator, StringSplitOptions.RemoveEmptyEntries);
@@ -192,8 +197,16 @@ namespace FireSharp.EventStreaming
             removed(this, args);
         }
 
+        private void OnKeepAlive(KeepAliveEventArgs args)
+        {
+            var keepAlive = KeepAlive;
+            if (keepAlive == null) return;
+            keepAlive(this, args);
+        }
+
         public event ValueAddedEventHandler Added;
         public event ValueChangedEventHandler Changed;
         public event ValueRemovedEventHandler Removed;
+        public event KeepAliveEventHandler KeepAlive;
     }
 }

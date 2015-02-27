@@ -121,9 +121,9 @@ namespace FireSharp
         }
 
         public async Task<FirebaseResponse> OnAsync(string path, ValueAddedEventHandler added = null, ValueChangedEventHandler changed = null,
-            ValueRemovedEventHandler removed = null)
+            ValueRemovedEventHandler removed = null, KeepAliveEventHandler keepAlive = null)
         {
-            return new FirebaseResponse(await _requestManager.ListenAsync(path), added, changed, removed);
+            return new FirebaseResponse(await _requestManager.ListenAsync(path), added, changed, removed, keepAlive);
         }
     }
 }

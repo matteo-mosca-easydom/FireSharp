@@ -22,6 +22,7 @@ namespace FireSharp.Interfaces
         Task<FirebaseResponse> OnAsync(string path,
             ValueAddedEventHandler added = null,
             ValueChangedEventHandler changed = null,
-            ValueRemovedEventHandler removed = null);
+            ValueRemovedEventHandler removed = null,
+            KeepAliveEventHandler keepAlive = null);
     }
 }

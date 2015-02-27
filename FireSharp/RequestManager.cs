@@ -65,7 +65,7 @@ namespace FireSharp
             var uri = PrepareUri(path);
 
             var request = new HttpRequestMessage(HttpMethod.Get, uri);
-            ////request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("text/event-stream"));
+            request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("text/event-stream"));
 
             var response = await _client.SendAsync(request, HttpCompletionOption.ResponseHeadersRead);
             response.EnsureSuccessStatusCode();
